@@ -1,20 +1,66 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from "react";
+import { StatusBar } from "react-native";
+import {
+  NativeBaseProvider,
+  Drawer,
+  Box,
+  Button,
+  HStack,
+} from "native-base";
+import { Header, Separator } from "./components";
+import { Article, List, NativeBaseBasic, GlueStackUIBasic } from "./screens";
 
-export default function App() {
+// Array of pages
+const pageArr = [
+  { name: "List", comp: <List /> },
+  { name: "Article", comp: <Article /> },
+  { name: "NativeBaseBasic", comp: <NativeBaseBasic /> },
+  { name: "Gluestack UI Basic", comp: <GlueStackUIBasic /> },
+];
+
+const App = () => {
+  // State Declaration
+  const [page, setPage] = useState("List");
+
+  // Arrow Function inside Functional Component
+  const changePage = (pageName, onClose) => {
+    onClose(); // Close Drawer
+    setPage(pageName); // Change state value
+  };
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NativeBaseProvider>
+      <Drawer
+        placement="left"
+        size={300}
+        isOpen={false}
+        onClose={() => {}}
+        content={
+          <Box p={4} bg="#222222" flex={1}>
+            {pageArr.map((item) => (
+              <HStack key={item.name}>
+                <Button
+                  text={item.name}
+                  colorScheme="blue"
+                  onPress={() => changePage(item.name)}
+                />
+              </HStack>
+            ))}
+            <Separator height={30} />
+            <Button
+              text="Close"
+              colorScheme="red"
+              onPress={() => {}}
+            />
+          </Box>
+        }
+      >
+        <StatusBar barStyle="light-content" backgroundColor="#AA0002" />
+        <Header />
+        {page === "List" ? <List /> : page === "Article" ? <Article /> : null}
+      </Drawer>
+    </NativeBaseProvider>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
